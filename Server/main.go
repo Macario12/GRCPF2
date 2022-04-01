@@ -7,7 +7,7 @@ import (
 	"log"
 	"net"
 
-	pb "github.com/macario12/GRCPF2/proto"
+	pb "github.com/macario12/GRCPF2/protos"
 	"google.golang.org/grpc"
 )
 
@@ -15,15 +15,14 @@ var (
 	port = flag.Int("port", 50051, "The server port")
 )
 
-// server is used to implement helloworld.GreeterServer.
 type server struct {
 	pb.UnimplementedGameServer
 }
 
 // SayHello implements helloworld.GreeterServer
 func (s *server) AddGame(ctx context.Context, in *pb.GameRequest) (*pb.GameResponse, error) {
-	log.Printf("Received: %v", in.GetGame_id())
-	return &pb.HelloReply{Message: "Hello " + in.GetGame_id()}, nil
+	log.Printf("Received: %v", in.GetGameId())
+	return &pb.GameResponse{Message: "Hello "}, nil
 }
 
 func main() {
