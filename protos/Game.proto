@@ -4,15 +4,15 @@ syntax = "proto3";
 option go_package = "github.com/macario12/GRCPF2/protos";
 option java_multiple_files = true;
 option java_package = "io.grpc.protos.game";
-option java_outer_classname = "Game";
+option java_outer_classname = "GameProto";
 
 package Game;
 
 // Interface exported by the server.
-service Game {
+service GameService {
   rpc GetGames(Empty) returns (GameResponse) {}
 
-  rpc AddGame(GameRequest) returns (stream GameResponse) {}
+  rpc AddGame(GameRequest) returns (GameResponse) {}
 }
 
 message Empty {
