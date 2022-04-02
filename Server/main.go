@@ -40,10 +40,10 @@ func selectGame(numGame, players int) int {
 		return GameLast(players)
 	case 4:
 		fmt.Println("Ejecutando Juego 4")
-		return GameRadmon(players)
+		return GameMedium(players)
 	case 5:
 		fmt.Println("Ejecutando Juego 5")
-		return GameRadmon(players)
+		return GamePrimoRadmon(players)
 
 	}
 	return 0
@@ -62,6 +62,50 @@ func GameFrist(players int) int {
 func GameLast(players int) int {
 	winner := players
 	return winner
+}
+
+func GameMedium(players int) int {
+	winner := int(players / 2)
+	return winner
+}
+
+func GamePrimoRadmon(players int) int {
+	tamañoPrimos := 0
+	for i := 2; i < players; i++ {
+		if Esprimo(i) {
+			tamañoPrimos = tamañoPrimos + 1
+			//fmt.Println(i)
+		}
+	}
+	//fmt.Println(tamañoPrimos)
+	arrayPrimos := make([]int, tamañoPrimos)
+
+	contadorArray := 0
+	for i := 2; i < players; i++ {
+		if Esprimo(i) {
+			arrayPrimos[contadorArray] = i
+			contadorArray++
+		}
+
+	}
+	winnerPos := rand.Intn(tamañoPrimos - 1)
+	fmt.Println(winnerPos)
+	winner := arrayPrimos[winnerPos]
+
+	return winner
+}
+
+func Esprimo(numero int) bool {
+	contador := 2
+	primo := true
+	for (primo) && (contador != numero) {
+		if numero%contador == 0 {
+			primo = false
+		}
+		contador = contador + 1
+	}
+
+	return primo
 }
 
 func main() {
