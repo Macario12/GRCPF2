@@ -23,6 +23,12 @@ app.post('/Games',(req,res)=>{
     
 })
 
+app.get('/',(req,res)=>{
+
+  res.send("Funcionando client Node");
+    
+})
+
 app.listen('3000', ()=>{
     console.log("Servidor en puerto 3000")
 })
