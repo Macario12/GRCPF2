@@ -9,6 +9,7 @@ import (
 	"net"
 	"strconv"
 
+	"github.com/confluentinc/confluent-kafka-go/kafka"
 	pb "github.com/macario12/GRCPF2/protos"
 	"google.golang.org/grpc"
 )
@@ -24,7 +25,52 @@ type server struct {
 // SayHello implements helloworld.GreeterServer
 func (s *server) AddGame(ctx context.Context, in *pb.GameRequest) (*pb.GameResponse, error) {
 	log.Printf("Received: %v", in.GetGameId())
-	return &pb.GameResponse{Message: "Winner: " + strconv.Itoa(selectGame(int(in.GetGameId()), int(in.GetPlayers()))) + " in Game: " + strconv.Itoa(int(in.GetGameId()))}, nil
+	winner := strconv.Itoa(selectGame(int(in.GetGameId()), int(in.GetPlayers())))
+	//conexion kafka
+
+	//conn, err := kafka.DialLeader(context.Background(), "tcp", "localhost:9092", "topicF2", 0)
+
+	/*if err != nil {
+		log.Fatal("failed to dial leader:", err)
+	}
+	conn.SetWriteDeadline(time.Now().Add(time.Second * 10))*/
+	p, err := kafka.NewProducer(&kafka.ConfigMap{"bootstrap.servers": "localhost"})
+	if err != nil {
+		panic(err)
+	}
+
+	defer p.Close()
+
+	cadenaKafka := strconv.Itoa(int(in.GetGameId())) + "," + strconv.Itoa(int(in.GetPlayers())) + "," + winner + "," + "fin"
+
+	// Delivery report handler for produced messages
+	go func() {
+		for e := range p.Events() {
+			switch ev := e.(type) {
+			case *kafka.Message:
+				if ev.TopicPartition.Error != nil {
+					fmt.Printf("Delivery failed: %v\n", ev.TopicPartition)
+				} else {
+					fmt.Printf("Delivered message to %v\n", ev.TopicPartition)
+				}
+			}
+		}
+	}()
+
+	// Produce messages to topic (asynchronously)
+	topic := "topicF2"
+	//for _, word := range []string{cadenaKafka} {
+	p.Produce(&kafka.Message{
+		TopicPartition: kafka.TopicPartition{Topic: &topic, Partition: kafka.PartitionAny},
+		Value:          []byte(cadenaKafka),
+	}, nil)
+	///}
+
+	// Wait for message deliveries before shutting down
+	p.Flush(15 * 1000)
+	//conn.WriteMessages(kafka.Message{Value: []byte(cadenaKafka)})
+
+	return &pb.GameResponse{Message: "Winner: " + winner + " in Game: " + strconv.Itoa(int(in.GetGameId()))}, nil
 }
 
 func selectGame(numGame, players int) int {
