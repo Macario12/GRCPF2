@@ -15,7 +15,7 @@ var packageDefinition = protoLoader.loadSync(PROTO_PATH, options);
 
 const GamesService = grpc.loadPackageDefinition(packageDefinition).Game;
 
-const client = new GamesService.GameService('0.0.0.0:50051',
+const client = new GamesService.GameService('34.125.140.78:50051',
 grpc.credentials.createInsecure());
 
 
