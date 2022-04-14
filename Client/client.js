@@ -1,4 +1,4 @@
-var PROTO_PATH = '../protos/Game.proto';
+var PROTO_PATH = './protos/Game.proto';
 const grpc = require("@grpc/grpc-js");
 var protoLoader = require("@grpc/proto-loader");
 
