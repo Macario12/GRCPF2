@@ -31,7 +31,7 @@ services:
     networks:
     - clase4-net
   backendgrcp:
-    image: backendgrcp
+    image: amacario502/backendgrcp
     container_name: backend
     ports:
       - "50051:50051"
