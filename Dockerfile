@@ -1,7 +1,7 @@
 FROM golang:1.18
-WORKDIR /serverContainer
+WORKDIR /subscriberContainer
 COPY . .
 RUN go mod download
 
 EXPOSE 50051
-CMD ["go","run","Server/main.go"]
+CMD ["go","run","Subscriber/main.go"]

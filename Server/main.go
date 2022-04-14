@@ -34,7 +34,7 @@ func (s *server) AddGame(ctx context.Context, in *pb.GameRequest) (*pb.GameRespo
 		log.Fatal("failed to dial leader:", err)
 	}
 	conn.SetWriteDeadline(time.Now().Add(time.Second * 10))*/
-	p, err := kafka.NewProducer(&kafka.ConfigMap{"bootstrap.servers": "localhost"})
+	p, err := kafka.NewProducer(&kafka.ConfigMap{"bootstrap.servers": "34.125.140.78:9092"})
 	if err != nil {
 		panic(err)
 	}
