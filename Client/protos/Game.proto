@@ -1,0 +1,28 @@
+
+syntax = "proto3";
+
+option go_package = "github.com/macario12/GRCPF2/protos";
+option java_multiple_files = true;
+option java_package = "io.grpc.protos.game";
+option java_outer_classname = "GameProto";
+
+package Game;
+
+// Interface exported by the server.
+service GameService {
+  rpc GetGames(Empty) returns (GameResponse) {}
+
+  rpc AddGame(GameRequest) returns (GameResponse) {}
+}
+
+message Empty {
+}
+
+message GameRequest {
+  int32 game_id = 1;
+  int32 players = 2;
+}
+
+message GameResponse {
+  string message = 1;
+}
