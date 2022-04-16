@@ -159,8 +159,10 @@ func UltimosJuegos(array []LogStruct) []LogStruct {
 
 	var UltimosJuegosArray []LogStruct
 	tamanioArray := len(array)
-	for i := 0; i <= 10; i++ {
-		UltimosJuegosArray = append(UltimosJuegosArray, array[tamanioArray-i])
+	if tamanioArray >= 10 {
+		for i := 0; i <= 10; i++ {
+			UltimosJuegosArray = append(UltimosJuegosArray, array[tamanioArray-i])
+		}
 	}
 
 	return UltimosJuegosArray
