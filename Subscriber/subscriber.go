@@ -93,6 +93,13 @@ func coneccition(cadenaCompara *string) {
 			Password: "",
 			DB:       0,
 		})
+		//cliente tidis
+		clienttidis := redis.NewClient(&redis.Options{
+			Addr:     "34.125.12.54:5379",
+			Password: "",
+			DB:       0,
+		})
+
 		//Crear colleccion y base de datos si no existen y registrar en coleccion
 		collection = client.Database("SO1_Proyecto1_Fase2").Collection("Game_Logs")
 		respuesta, err := collection.InsertOne(context.TODO(), Log)
@@ -103,22 +110,16 @@ func coneccition(cadenaCompara *string) {
 			fmt.Print(respuesta)
 		}
 		datosTiemporeal, err := json.Marshal(Log)
-		ArrayTiempOReal, err := json.Marshal(UltimosJuegos(arrarLogs))
+
 		//guardar dato en tiempo real en redis
 		errorRedis := clientRedis.Set("tiempoReal", datosTiemporeal, 0).Err()
 		if errorRedis != nil {
 			panic(errorRedis)
 		}
 
-		//guardar ultimos 10 jugadores en redis
-		errorRedisPlayres := clientRedis.Set("UltimosDatos", ArrayTiempOReal, 0).Err()
-		if errorRedisPlayres != nil {
-			panic(errorRedisPlayres)
-		}
-
-		errorRedirMejeores := clientRedis.Set("UltimosDatos", ArrayTiempOReal, 0).Err()
-		if errorRedirMejeores != nil {
-			panic(errorRedirMejeores)
+		errorTidis := clienttidis.Set("tiempoReal", datosTiemporeal, 0).Err()
+		if errorTidis != nil {
+			panic(errorTidis)
 		}
 
 		*cadenaCompara = cadenaRecibida
@@ -153,17 +154,4 @@ func parseGame(id int) string {
 	}
 
 	return nameGame
-}
-
-func UltimosJuegos(array []LogStruct) []LogStruct {
-
-	var UltimosJuegosArray []LogStruct
-	tamanioArray := len(array)
-	if tamanioArray >= 10 {
-		for i := 1; i <= 9; i++ {
-			UltimosJuegosArray = append(UltimosJuegosArray, array[tamanioArray-i])
-		}
-	}
-
-	return UltimosJuegosArray
 }
