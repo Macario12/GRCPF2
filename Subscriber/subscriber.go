@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"log"
 	"strconv"
@@ -103,18 +104,18 @@ func coneccition(cadenaCompara *string) {
 		}
 
 		//guardar dato en tiempo real en redis
-		errorRedis := clientRedis.Set(context.Background(), "tiempoReal", Log, 0).Err()
+		errorRedis := clientRedis.Set(context.Background(), "tiempoReal", json.Marshal(Log), 0).Err()
 		if errorRedis != nil {
 			panic(errorRedis)
 		}
 
 		//guardar ultimos 10 jugadores en redis
-		errorRedisPlayres := clientRedis.Set("UltimosDatos", arrarLogs, 0).Err()
+		errorRedisPlayres := clientRedis.Set("UltimosDatos", json.Marshal(arrarLogs), 0).Err()
 		if errorRedisPlayres != nil {
 			panic(errorRedisPlayres)
 		}
 
-		errorRedirMejeores := clientRedis.Set("UltimosDatos", arrarLogs, 0).Err()
+		errorRedirMejeores := clientRedis.Set("UltimosDatos", json.Marshal(arrarLogs), 0).Err()
 		if errorRedirMejeores != nil {
 			panic(errorRedirMejeores)
 		}
