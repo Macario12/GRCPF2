@@ -102,20 +102,21 @@ func coneccition(cadenaCompara *string) {
 		} else {
 			fmt.Print(respuesta)
 		}
-
+		datosTiemporeal, err := json.Marshal(Log)
+		ArrayTiempOReal, err := json.Marshal(arrarLogs)
 		//guardar dato en tiempo real en redis
-		errorRedis := clientRedis.Set("tiempoReal", json.Marshal(Log), 0).Err()
+		errorRedis := clientRedis.Set("tiempoReal", datosTiemporeal, 0).Err()
 		if errorRedis != nil {
 			panic(errorRedis)
 		}
 
 		//guardar ultimos 10 jugadores en redis
-		errorRedisPlayres := clientRedis.Set("UltimosDatos", json.Marshal(arrarLogs), 0).Err()
+		errorRedisPlayres := clientRedis.Set("UltimosDatos", ArrayTiempOReal, 0).Err()
 		if errorRedisPlayres != nil {
 			panic(errorRedisPlayres)
 		}
 
-		errorRedirMejeores := clientRedis.Set("UltimosDatos", json.Marshal(arrarLogs), 0).Err()
+		errorRedirMejeores := clientRedis.Set("UltimosDatos", ArrayTiempOReal, 0).Err()
 		if errorRedirMejeores != nil {
 			panic(errorRedirMejeores)
 		}
