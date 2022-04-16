@@ -103,7 +103,7 @@ func coneccition(cadenaCompara *string) {
 			fmt.Print(respuesta)
 		}
 		datosTiemporeal, err := json.Marshal(Log)
-		ArrayTiempOReal, err := json.Marshal(arrarLogs)
+		ArrayTiempOReal, err := json.Marshal(UltimosJuegos(arrarLogs))
 		//guardar dato en tiempo real en redis
 		errorRedis := clientRedis.Set("tiempoReal", datosTiemporeal, 0).Err()
 		if errorRedis != nil {
@@ -153,4 +153,15 @@ func parseGame(id int) string {
 	}
 
 	return nameGame
+}
+
+func UltimosJuegos(array []LogStruct) []LogStruct {
+
+	var UltimosJuegosArray []LogStruct
+	tamanioArray := len(array)
+	for i := 0; i <= 10; i++ {
+		UltimosJuegosArray = append(UltimosJuegosArray, array[tamanioArray-i])
+	}
+
+	return UltimosJuegosArray
 }
