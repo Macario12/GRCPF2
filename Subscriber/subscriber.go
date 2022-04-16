@@ -160,7 +160,7 @@ func UltimosJuegos(array []LogStruct) []LogStruct {
 	var UltimosJuegosArray []LogStruct
 	tamanioArray := len(array)
 	if tamanioArray >= 10 {
-		for i := 0; i <= 9; i++ {
+		for i := 1; i <= 9; i++ {
 			UltimosJuegosArray = append(UltimosJuegosArray, array[tamanioArray-i])
 		}
 	}
