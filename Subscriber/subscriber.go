@@ -109,12 +109,12 @@ func coneccition(cadenaCompara *string) {
 		}
 
 		//guardar ultimos 10 jugadores en redis
-		errorRedisPlayres := clientRedis.Set(context.Background(), "UltimosDatos", arrarLogs, 0).Err()
+		errorRedisPlayres := clientRedis.Set("UltimosDatos", arrarLogs, 0).Err()
 		if errorRedisPlayres != nil {
 			panic(errorRedisPlayres)
 		}
 
-		errorRedirMejeores := clientRedis.Set(context.Background(), "UltimosDatos", arrarLogs, 0).Err()
+		errorRedirMejeores := clientRedis.Set("UltimosDatos", arrarLogs, 0).Err()
 		if errorRedirMejeores != nil {
 			panic(errorRedirMejeores)
 		}
