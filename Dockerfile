@@ -1,7 +1,7 @@
-FROM node:17
-WORKDIR /clientgrcp
+FROM golang:1.18
+WORKDIR /subscriberContainer
 COPY . .
-RUN cd Client
-RUN npm install
-EXPOSE 3000
-CMD ["node","index.js"] 
+RUN go mod download
+
+EXPOSE 50051
+CMD ["go","run","Subscriber/subscriber.go"]

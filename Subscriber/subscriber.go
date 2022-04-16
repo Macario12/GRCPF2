@@ -8,12 +8,13 @@ import (
 	"strings"
 	"time"
 
+	"github.com/go-redis/redis"
 	"github.com/segmentio/kafka-go"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-type Log struct {
+type LogStruct struct {
 	GameId   int    `json:"game_id"`
 	Players  int    `json:"players"`
 	Winner   string `json:"winner"`
@@ -45,6 +46,11 @@ func coneccition(cadenaCompara *string) {
 	batch := conn.ReadBatch(1e3, 1e9) // fetch 10KB min, 1MB max
 
 	bytes := make([]byte, 1e3) // 10KB max per message
+
+	var Log LogStruct //Log players
+
+	var arrarLogs []LogStruct
+
 	for {
 		_, err := batch.Read(bytes)
 		if err != nil {
@@ -52,10 +58,8 @@ func coneccition(cadenaCompara *string) {
 		}
 		cadenaRecibida = string(bytes)
 		//fmt.Println(string(bytes))
-	}
 
-	if strings.Compare(*cadenaCompara, cadenaRecibida) != 0 {
-		var Log Log
+		//array log
 		arrayValores := strings.Split(cadenaRecibida, ",")
 
 		fmt.Println("id", arrayValores[0])
@@ -64,7 +68,6 @@ func coneccition(cadenaCompara *string) {
 		t := time.Now()
 		idgame, _ := strconv.Atoi(arrayValores[0])
 		players, _ := strconv.Atoi(arrayValores[1])
-		//winner, _ := strconv.Atoi(arrayValores[2])
 		Log.GameId = idgame
 		Log.Players = players
 		Log.GameName = parseGame(idgame)
@@ -72,12 +75,23 @@ func coneccition(cadenaCompara *string) {
 		Log.Queue = "KAFKA"
 		Log.Fecha = t.Format("2006-01-02 15:04:05")
 
+		arrarLogs = append(arrarLogs, Log)
+	}
+
+	if strings.Compare(*cadenaCompara, cadenaRecibida) != 0 {
+
 		//Almacenar Mongo//Conectar con mongodb
 		clientOptions := options.Client().ApplyURI("mongodb://admin:pass123@34.125.197.46:27017")
 		client, err := mongo.Connect(ctx, clientOptions)
 		if err != nil {
 			log.Fatal(err)
 		}
+		//cliente redis
+		clientRedis := redis.NewClient(&redis.Options{
+			Addr:     "34.125.235.244:6379",
+			Password: "",
+			DB:       0,
+		})
 		//Crear colleccion y base de datos si no existen y registrar en coleccion
 		collection = client.Database("SO1_Proyecto1_Fase2").Collection("Game_Logs")
 		respuesta, err := collection.InsertOne(context.TODO(), Log)
@@ -88,9 +102,27 @@ func coneccition(cadenaCompara *string) {
 			fmt.Print(respuesta)
 		}
 
+		//guardar dato en tiempo real en redis
+		errorRedis := clientRedis.Set(context.Background(), "tiempoReal", Log, 0).Err()
+		if errorRedis != nil {
+			panic(errorRedis)
+		}
+
+		//guardar ultimos 10 jugadores en redis
+		errorRedisPlayres := clientRedis.Set(context.Background(), "UltimosDatos", arrarLogs, 0).Err()
+		if errorRedisPlayres != nil {
+			panic(errorRedisPlayres)
+		}
+
+		errorRedirMejeores := clientRedis.Set(context.Background(), "UltimosDatos", arrarLogs, 0).Err()
+		if errorRedirMejeores != nil {
+			panic(errorRedirMejeores)
+		}
+
 		*cadenaCompara = cadenaRecibida
 	}
 
+	fmt.Println("Redis: Valor agregado Correctamente")
 	coneccition(*&cadenaCompara)
 }
 
