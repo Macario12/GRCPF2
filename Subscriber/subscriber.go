@@ -104,7 +104,7 @@ func coneccition(cadenaCompara *string) {
 		}
 
 		//guardar dato en tiempo real en redis
-		errorRedis := clientRedis.Set(context.Background(), "tiempoReal", json.Marshal(Log), 0).Err()
+		errorRedis := clientRedis.Set("tiempoReal", json.Marshal(Log), 0).Err()
 		if errorRedis != nil {
 			panic(errorRedis)
 		}
