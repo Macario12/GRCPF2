@@ -7,6 +7,7 @@ import (
 	"log"
 	"math/rand"
 	"net"
+	"os"
 	"strconv"
 
 	"github.com/confluentinc/confluent-kafka-go/kafka"
@@ -34,7 +35,7 @@ func (s *server) AddGame(ctx context.Context, in *pb.GameRequest) (*pb.GameRespo
 		log.Fatal("failed to dial leader:", err)
 	}
 	conn.SetWriteDeadline(time.Now().Add(time.Second * 10))*/
-	p, err := kafka.NewProducer(&kafka.ConfigMap{"bootstrap.servers": "34.125.140.78:9092"})
+	p, err := kafka.NewProducer(&kafka.ConfigMap{"bootstrap.servers": os.Getenv("ADD_KAFKA")})
 	if err != nil {
 		panic(err)
 	}

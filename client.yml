@@ -1,0 +1,42 @@
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: grcp-deploymentn
+  labels:
+    app: grcpapp
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: grcpapp
+  template:
+    metadata:
+      labels:
+        app: grcpapp
+    spec:
+      hostname: grcp-host
+      containers:
+      - name: client
+        image: amacario502/clientgrcp_201905837
+        ports:
+        - containerPort: 3000
+        env:
+        - name: GRCP_SERVER
+          value: "grcp-host:50051"
+    
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: svc-demo
+  labels:
+    app: grcpapp
+spec:
+  type: LoadBalancer
+  selector:
+    app: grcpapp
+  ports:
+    - port: 3000
+      targetPort: 3000
+      protocol: TCP
