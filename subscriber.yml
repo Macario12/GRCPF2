@@ -18,8 +18,7 @@ spec:
       hostname: grcp-host
       containers:
       - name: subscriber-cont
-        image: amacario502/clientgrcp_201905837
+        image: amacario502/subscriber_201905837
         env:
         - name: ADD_KAFKA
           value: my-cluster-kafka-bootstrap.kafka:9092
-    
