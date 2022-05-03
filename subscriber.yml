@@ -3,6 +3,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: subscriber-deployment
+  namespace: practica2-201905837
   labels:
     app: subscriber
 spec:
