@@ -38,6 +38,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: svc-demo
+  namespace: practica2-201905837
   labels:
     app: grcpapp
 spec:
