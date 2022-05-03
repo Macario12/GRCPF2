@@ -1,0 +1,1 @@
+kubectl create -f 'https://strimzi.io/install/latest?namespace=practica2-201905837' -n practica2-201905837
