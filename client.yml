@@ -3,6 +3,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: grcp-deploymentn
+  namespace: practica2-201905837
   labels:
     app: grcpapp
 spec:
